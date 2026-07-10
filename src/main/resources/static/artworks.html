@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artworks - Art Gallery</title>
+  <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <h1>🎨 Art Gallery</h1>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artworks.html" class="active">Artworks</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="exhibitions.html">Exhibitions</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="gallery">
+    <h2>Our Collections</h2>
+    <div class="grid" id="artworkGrid">
+      <!-- Artworks will be loaded here dynamically -->
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Art Gallery Management System</p>
+  </footer>
+
+  <script>
+    fetch("http://localhost:8081/api/artworks")
+      .then(response => response.json())
+      .then(artworks => {
+        const grid = document.getElementById("artworkGrid");
+        grid.innerHTML = "";
+
+        if (artworks.length === 0) {
+          grid.innerHTML = "<p>No artworks available yet.</p>";
+          return;
+        }
+
+        artworks.forEach(art => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${art.imageUrl || 'placeholder.jpg'}" alt="${art.title}">
+            <h3>${art.title}</h3>
+            <p>${art.artistName}</p>
+            <p>Price: Rs.${art.price}</p>
+            <button onclick="window.location.href='buy.html?name=${encodeURIComponent(art.title)}&price=${art.price}&image=${encodeURIComponent(art.imageUrl || '')}'">Buy Now!</button>
+          `;
+          grid.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error("Error loading artworks:", error);
+        document.getElementById("artworkGrid").innerHTML = "<p>Failed to load artworks.</p>";
+      });
+  </script>
+</body>
+</html>

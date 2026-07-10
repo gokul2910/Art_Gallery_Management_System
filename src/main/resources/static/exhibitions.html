@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exhibitions - Art Gallery</title>
+  <link rel="stylesheet" href="style4.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <h1>🎨 Art Gallery</h1>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artworks.html">Artworks</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="exhibitions.html" class="active">Exhibitions</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="exhibitions">
+    <h2>Upcoming Exhibitions</h2>
+    <div class="grid">
+      <div class="card"><center>
+        <h3>Modern Art 2025</h3>
+        <p>Location: New York Museum</p>
+        <p>Date: 12th - 25th May 2025</p>
+        <button type="button" onclick="bookEvent()">Book Here!</button>
+        </center>
+      </div>
+      <div class="card"><center>
+        <h3>Impressionist Masters</h3>
+        <p>Location: Paris Louvre</p>
+        <p>Date: 1st - 15th June 2025</p>
+    <button type="button" onclick="bookEvent()">Book Here!</button>
+       </center>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Art Gallery Management System</p>
+  </footer>
+    
+    <script>
+    function bookEvent() {
+      alert("🎉 EVENT BOOKED SUCCESSFULLY!\n\n📧 The ticket will be sent to your Mail ID.");
+    }
+  </script>
+  
+</body>
+</html>

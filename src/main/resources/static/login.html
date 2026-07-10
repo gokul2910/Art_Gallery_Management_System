@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url("ulogin.jpg") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input[type="text"], input[type="password"] {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: #0072ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    input[type="submit"]:hover {
+      background: #0057cc;
+    }
+    p {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    a {
+      color: #0072ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>User Login</h2>
+    <form onsubmit="return validateLogin()">
+      <input type="text" id="username" placeholder="Enter Email" required><br>
+      <input type="password" id="password" placeholder="Enter Password" required><br>
+      <input type="submit" value="Login">
+    </form>
+    <p>Don't have an account? <a href="registration.html">Register Here</a></p>
+  </div>
+
+  <script>
+    function validateLogin() {
+      const email = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      fetch("http://localhost:8081/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password })
+      })
+        .then(response => response.text())
+        .then(result => {
+          if (result.includes("Login successful")) {
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("userEmail", email);
+            alert("Login successful! Redirecting...");
+            window.location.href = "index.html";
+          } else {
+            alert("Invalid email or password. Try again.");
+          }
+        })
+        .catch(error => {
+          alert("Error connecting to server. Is the backend running?");
+          console.error(error);
+        });
+
+      return false;
+    }
+  </script>
+</body>
+</html>

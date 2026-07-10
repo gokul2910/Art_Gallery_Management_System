@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url(admin.jpg);
+      background-size: cover;
+      background-position: center;
+    }
+    .login-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+      position: relative;
+    }
+    h2 { margin-bottom: 20px; color: #333; }
+    input[type="text"], input[type="password"] {
+      width: 90%; padding: 12px; margin: 10px 0;
+      border: 1px solid #ccc; border-radius: 6px;
+    }
+    input[type="submit"] {
+      width: 100%; padding: 12px; background: #764ba2;
+      color: white; border: none; border-radius: 6px;
+      cursor: pointer; font-size: 16px; font-weight: bold;
+    }
+    input[type="submit"]:hover { background: #5a3586; }
+    .logout-btn {
+      position: absolute; top: 15px; right: 15px;
+      background: #ff4d4d; color: white; border: none;
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;
+    }
+    .logout-btn:hover { background: #cc0000; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <button class="logout-btn" onclick="logout()">Back</button>
+    <h2>Admin Login</h2>
+    <form onsubmit="return validateAdminLogin()">
+      <input type="text" id="admin-username" placeholder="Admin Email" required><br>
+      <input type="password" id="admin-password" placeholder="Admin Password" required><br>
+      <input type="submit" value="Login">
+    </form>
+  </div>
+
+  <script>
+    function validateAdminLogin() {
+      const email = document.getElementById("admin-username").value;
+      const password = document.getElementById("admin-password").value;
+console.log("EMAIL:[" + email + "]");
+console.log("PASSWORD:[" + password + "]");
+      fetch("http://localhost:8081/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password })
+      })
+        .then(response => response.text())
+        .then(result => {
+          if (result.includes("Role: ADMIN")) {
+            localStorage.setItem("adminLoggedIn", "true");
+            window.location.href = "admin.html";
+          } else {
+            alert("Invalid Admin credentials!");
+          }
+        })
+        .catch(error => {
+          alert("Error connecting to server. Is the backend running?");
+          console.error(error);
+        });
+
+      return false;
+    }
+
+    function logout() {
+      localStorage.removeItem("adminLoggedIn");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

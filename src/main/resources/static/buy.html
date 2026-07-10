@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buy Artwork</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url("homey.jpeg") no-repeat center center fixed;
+      background-size: cover;
+      padding: 40px;
+      text-align: center;
+    }
+    .buy-container {
+      background-color: lightgrey;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    h2 {
+      color: #333;
+    }
+    .price {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0072ff;
+    }
+    img {
+      max-width: 300px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    button {
+      background: #0072ff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px;
+    }
+    button:hover {
+      background: #0057cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="buy-container">
+    <h2 id="artworkName">Artwork Name</h2>
+    <img id="artworkImage" src="" alt="Artwork">
+    <p class="price" id="artworkPrice">Price: Rs.0</p>
+    
+    <button onclick="goToPayment()">Proceed to Payment</button>
+  </div>
+
+  <script>
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get("name");
+  const price = params.get("price");
+  const image = params.get("image");
+
+  if (name) {
+    document.getElementById("artworkName").textContent = name;
+  }
+  if (price) {
+    document.getElementById("artworkPrice").textContent = "Price: Rs." + price;
+  }
+  if (image) {
+    document.getElementById("artworkImage").src = image;
+    document.getElementById("artworkImage").alt = name;
+  }
+
+  function goToPayment() {
+    const loggedIn = localStorage.getItem("loggedIn");
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (loggedIn !== "true" || !userEmail) {
+      alert("⚠️ Please log in before making a purchase!");
+      window.location.href = "login.html";
+      return;
+    }
+
+    const purchase = {
+      email: userEmail,
+      artworkName: name,
+      price: price,
+      date: new Date().toLocaleString()
+    };
+
+    let purchases = JSON.parse(localStorage.getItem("purchaseRecords")) || [];
+    purchases.push(purchase);
+    localStorage.setItem("purchaseRecords", JSON.stringify(purchases));
+
+    window.location.href = `payment.html?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&image=${encodeURIComponent(image)}`;
+  }
+</script>
+</body>
+</html>

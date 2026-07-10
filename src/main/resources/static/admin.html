@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Art Gallery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url("inventory.jpg") no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #222;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+    .logout-btn {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .logout-btn:hover {
+      background: #cc0000;
+    }
+    .admin-container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 30px;
+    }
+    .stat-box {
+      background: #0072ff;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      flex: 1;
+      margin: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background: #0072ff;
+      color: white;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .edit-btn {
+      background: #28a745;
+      color: white;
+    }
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+
+  <header>
+    <h1>Admin Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
+
+  <div class="admin-container">
+    <h2>Welcome, Admin</h2>
+
+    <div class="stats">
+      <div class="stat-box">Artworks: <span id="artworkCount">0</span></div>
+      <div class="stat-box">Artists: <span id="artistCount">0</span></div>
+    </div>
+
+    <h3>Add New Artwork</h3>
+<div style="margin-bottom: 20px;">
+  <input type="text" id="newTitle" placeholder="Artwork Title" style="padding:8px; margin:5px;">
+  <input type="text" id="newArtist" placeholder="Artist Name" style="padding:8px; margin:5px;">
+  <input type="number" id="newPrice" placeholder="Price" style="padding:8px; margin:5px;">
+  <input type="text" id="newImageUrl" placeholder="Image URL" style="padding:8px; margin:5px;">
+  <input type="text" id="newDescription" placeholder="Description" style="padding:8px; margin:5px;">
+  <button onclick="addArtwork()" style="padding:8px 16px; background:#0072ff; color:white; border:none; border-radius:6px; cursor:pointer;">Add Artwork</button>
+</div>
+
+    <h3>Manage Artworks</h3>
+    <table id="artworkTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Artist</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Manage Artists</h3>
+    <table id="artistTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Country</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>Newly Registered Users</h2>
+  <table id="userTable" style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Registered On</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <center>
+    <button onclick="clearUsers()" style="margin-top: 10px;">Clear All Users</button>
+  </center>
+
+  <h3>Purchase Records</h3>
+  <table id="purchaseTable" style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>Customer Name</th>
+        <th>Email</th>
+        <th>Artwork Name</th>
+        <th>Price (Rs.)</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let artworks = [];
+
+    let artists = [
+      { name: "Vincent Van Gogh", country: "Netherlands" },
+      { name: "Leonardo da Vinci", country: "Italy" },
+      { name: "Edward Munch", country: "Norway" },
+      { name: "Michelangelo", country: "Italy" },
+      { name: "Claude Monet", country: "France" },
+      { name: "Pablo Picasso", country: "Spain" }
+    ];
+
+    function loadDashboard() {
+      fetch("http://localhost:8081/api/artworks")
+        .then(response => response.json())
+        .then(data => {
+          artworks = data;
+          document.getElementById("artworkCount").textContent = artworks.length;
+
+          const artworkTbody = document.querySelector("#artworkTable tbody");
+          artworkTbody.innerHTML = "";
+          artworks.forEach((art) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${art.title}</td>
+              <td>${art.artistName}</td>
+              <td>Rs.${art.price}</td>
+              <td>
+                <button class="edit-btn" onclick="editArtwork(${art.id});">Edit</button>
+                <button class="delete-btn" onclick="deleteArtwork(${art.id});">Delete</button>
+              </td>
+            `;
+            artworkTbody.appendChild(row);
+          });
+        })
+        .catch(error => console.error("Error fetching artworks:", error));
+
+      document.getElementById("artistCount").textContent = artists.length;
+      const artistTbody = document.querySelector("#artistTable tbody");
+      artistTbody.innerHTML = "";
+      artists.forEach((artist, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${artist.name}</td>
+          <td>${artist.country}</td>
+          <td>
+            <button class="edit-btn" onclick="editArtist(${index});">Edit</button>
+            <button class="delete-btn" onclick="deleteArtist(${index});">Delete</button>
+          </td>
+        `;
+        artistTbody.appendChild(row);
+      });
+    }
+
+    function editArtwork(id) {
+      const artwork = artworks.find(a => a.id === id);
+      if (!artwork) return;
+
+      const newTitle = prompt("Enter new artwork title:", artwork.title);
+      const newPrice = prompt("Enter new artwork price:", artwork.price);
+
+      if (newTitle) artwork.title = newTitle;
+      if (newPrice) artwork.price = parseFloat(newPrice);
+
+      fetch(`http://localhost:8081/api/artworks/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(artwork)
+      })
+        .then(() => loadDashboard())
+        .catch(error => console.error("Error updating artwork:", error));
+    }
+
+    function deleteArtwork(id) {
+      if (confirm("Are you sure you want to delete this artwork?")) {
+        fetch(`http://localhost:8081/api/artworks/${id}`, { method: "DELETE" })
+          .then(() => loadDashboard())
+          .catch(error => console.error("Error deleting artwork:", error));
+      }
+    }
+    function addArtwork() {
+  const title = document.getElementById("newTitle").value;
+  const artistName = document.getElementById("newArtist").value;
+  const price = parseFloat(document.getElementById("newPrice").value);
+  const imageUrl = document.getElementById("newImageUrl").value;
+  const description = document.getElementById("newDescription").value;
+
+  if (!title || !artistName || !price) {
+    alert("Please fill in at least title, artist, and price.");
+    return;
+  }
+
+  fetch("http://localhost:8081/api/artworks", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, artistName, price, imageUrl, description })
+  })
+    .then(response => response.json())
+    .then(data => {
+      alert("Artwork added successfully!");
+      document.getElementById("newTitle").value = "";
+      document.getElementById("newArtist").value = "";
+      document.getElementById("newPrice").value = "";
+      document.getElementById("newImageUrl").value = "";
+      document.getElementById("newDescription").value = "";
+      loadDashboard();
+    })
+    .catch(error => {
+      alert("Error adding artwork.");
+      console.error(error);
+    });
+}
+
+    function editArtist(index) {
+      const newName = prompt("Enter new artist name:", artists[index].name);
+      if (newName) {
+        artists[index].name = newName;
+      }
+      const newCountry = prompt("Enter new artist country:", artists[index].country);
+      if (newCountry) {
+        artists[index].country = newCountry;
+      }
+      loadDashboard();
+    }
+
+    function deleteArtist(index) {
+      if (confirm("Are you sure you want to delete this artist?")) {
+        artists.splice(index, 1);
+        loadDashboard();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("adminLoggedIn");
+      window.location.href = "admin-login.html";
+    }
+
+    function populateUserTable() {
+      fetch("http://localhost:8081/api/users")
+        .then(response => response.json())
+        .then(users => {
+          const tableBody = document.querySelector("#userTable tbody");
+          tableBody.innerHTML = "";
+          if (users.length === 0) {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td colspan="4" style="text-align:center;">No new users registered yet.</td>`;
+            tableBody.appendChild(row);
+          } else {
+           users.forEach(user => {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${user.username || '-'}</td>
+    <td>${user.email}</td>
+    <td>${user.mobile || '-'}</td>
+    <td>${user.role}</td>
+  `;
+  tableBody.appendChild(row);
+});
+          }
+        })
+        .catch(error => console.error("Error fetching users:", error));
+    }
+
+    function populatePurchaseTable() {
+      const purchases = JSON.parse(localStorage.getItem("purchaseRecords")) || [];
+      const tableBody = document.querySelector("#purchaseTable tbody");
+      tableBody.innerHTML = "";
+      if (purchases.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="5" style="text-align:center;">No purchases yet.</td>`;
+        tableBody.appendChild(row);
+      } else {
+        purchases.forEach(p => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${p.username}</td>
+            <td>${p.email}</td>
+            <td>${p.artworkName}</td>
+            <td>${p.price}</td>
+            <td>${p.date}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+    }
+
+    function clearUsers() {
+      if (confirm("Are you sure you want to delete all registered users?")) {
+        localStorage.removeItem("registeredUsers");
+        populateUserTable();
+      }
+    }
+
+    window.addEventListener('load', function() {
+      loadDashboard();
+      populateUserTable();
+      populatePurchaseTable();
+    });
+  </script>
+</body>
+</html>

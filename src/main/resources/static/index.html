@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art Gallery Management System</title>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+  <script src="agms.js"></script>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <h1>🎨 Art Gallery</h1>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artworks.html">Artworks</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="exhibitions.html">Exhibitions</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="admin-login.html">Admin</a></li>
+        <li><a href="login.html">Log Out</a></li>
+
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Welcome to Our Art Gallery</h2>
+    <p>Explore the beauty of art and creativity from world-renowned artists</p>
+    <a href="artworks.html" class="btn">Browse Collection</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Art Gallery Management System | All rights reserved</p>
+  </footer>
+  <script>
+  // Redirect user back to login page if not logged in
+  if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>
+
+
