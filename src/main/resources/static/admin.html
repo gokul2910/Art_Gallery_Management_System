@@ -191,7 +191,7 @@
     ];
 
     function loadDashboard() {
-      fetch("http://localhost:8081/api/artworks")
+     fetch("/api/artworks")
         .then(response => response.json())
         .then(data => {
           artworks = data;
@@ -242,7 +242,7 @@
       if (newTitle) artwork.title = newTitle;
       if (newPrice) artwork.price = parseFloat(newPrice);
 
-      fetch(`http://localhost:8081/api/artworks/${id}`, {
+      fetch(`/api/artworks/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(artwork)
@@ -253,7 +253,7 @@
 
     function deleteArtwork(id) {
       if (confirm("Are you sure you want to delete this artwork?")) {
-        fetch(`http://localhost:8081/api/artworks/${id}`, { method: "DELETE" })
+        fetch(`/api/artworks/${id}`, { method: "DELETE" })
           .then(() => loadDashboard())
           .catch(error => console.error("Error deleting artwork:", error));
       }
@@ -270,7 +270,7 @@
     return;
   }
 
-  fetch("http://localhost:8081/api/artworks", {
+  fetch("/api/artworks", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title, artistName, price, imageUrl, description })
@@ -316,7 +316,7 @@
     }
 
     function populateUserTable() {
-      fetch("http://localhost:8081/api/users")
+      fetch("/api/users")
         .then(response => response.json())
         .then(users => {
           const tableBody = document.querySelector("#userTable tbody");
