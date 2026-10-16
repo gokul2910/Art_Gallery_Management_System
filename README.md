@@ -27,13 +27,17 @@ REST API for an art gallery web app. Handles user registration and login with JW
 
 ## 📸 Screenshots (frontend)
 
-| Artworks | Checkout |
-|----------|----------|
-| ![Artworks](artworks.jpg) | ![Checkout](checkout.jpg) |
+| Artworks | Artwork detail |
+|----------|----------------|
+| ![Artworks](artworks.jpg) | ![Detail](artworkdescription.jpg) |
 
-| Order success | Admin: Add artwork |
-|---------------|--------------------|
-| ![Success](orderplace.jpg) | ![Admin](adminlogin.jpg) |
+| Checkout | Order placed |
+|----------|--------------|
+| ![Checkout](checkout.jpg) | ![Order placed](orderplace.jpg) |
+
+| Admin login |
+|-------------|
+| ![Admin login](adminlogin.jpg) |
 
 ## 🛠️ Tech stack
 
