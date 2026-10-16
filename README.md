@@ -33,7 +33,7 @@ REST API for an art gallery web app. Handles user registration and login with JW
 
 | Order success | Admin: Add artwork |
 |---------------|--------------------|
-| ![Success](success.jpg) | ![Admin](admin.jpg) |
+| ![Success](orderplace.jpg) | ![Admin](adminlogin.jpg) |
 
 ## 🛠️ Tech stack
 
