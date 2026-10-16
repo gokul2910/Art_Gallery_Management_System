@@ -29,11 +29,11 @@ REST API for an art gallery web app. Handles user registration and login with JW
 
 | Artworks | Checkout |
 |----------|----------|
-| ![Artworks](artworks.png) | ![Checkout](checkout.png) |
+| ![Artworks](artworks.jpg) | ![Checkout](checkout.jpg) |
 
 | Order success | Admin: Add artwork |
 |---------------|--------------------|
-| ![Success](success.png) | ![Admin](admin.png) |
+| ![Success](success.jpg) | ![Admin](admin.jpg) |
 
 ## 🛠️ Tech stack
 
